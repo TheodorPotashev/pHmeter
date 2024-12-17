@@ -38,23 +38,33 @@ def pH_calc(row, konc):
         print('В файле указан неправильный индекс формулы pH для ', row['sub'])
         pH = 0
     return pH
-# Функция для вычисления pH на основе формулы и концентрации
-def pH_calc(row, konc):
-    if row['id_formula'] == 1:
-        pH = -math.log10(0.5 * (-row['k_acid'] + math.sqrt(row['k_acid']**2 + 4*row['k_acid']*konc)))
-    elif row['id_formula'] == 2:
-        pH = 14 + math.log10(0.5 * (-row['k_base'] + math.sqrt(row['k_base']**2 + 4*row['k_base']*konc)))
-    elif row['id_formula'] == 3:
-        pH = -math.log10(0.5 * (-konc - row['k_acid'] + math.sqrt(konc**2 + 6*konc*row['k_acid'] + row['k_acid']**2)))
-    elif row['id_formula'] == 4:
-        pH = -math.log10(konc)
-    elif row['id_formula'] == 5:
-        pH = 14 + math.log10(0.5 * (-row['k_gidr'] + math.sqrt(row['k_gidr']**2 + 4*row['k_gidr']*konc)))
-    elif row['id_formula'] == 6:
-        pH = -math.log10(0.5 * (-row['k_gidr'] + math.sqrt(row['k_gidr']**2 + 4*row['k_gidr']*konc)))
-    elif row['id_formula'] == 7:
-        pH = 14 + math.log10(konc)
+# Основная программа: бесконечный цикл для ввода веществ и концентраций
+while True:
+    print('Введите вещество: ')
+    inp = input()  # Ожидание ввода пользователя
+    if inp == '' or list.get(inp.upper(), None) is None:  # Проверка существования вещества
+        print('Вещество не найдено в базе данных:', inp)
     else:
-        print('В файле указан неправильный индекс формулы pH для ', row['sub'])
-        pH = 0
-    return pH
+        vv = inp.upper()
+        row = list[vv]  # Данные для выбранного вещества
+        print('Введите концентрацию:')
+        while True:  
+            inp = input()  # Ждет ввода концентрации
+            try:
+                konc = float(inp.replace(',', '.'))  # Заменяем запятую на точку и преобразуем в число
+            except:
+                konc = -1
+            if konc < 0 or konc > 1:  # Проверка корректности концентрации
+                print('Необходимо указать концентрацию как дробное число больше 0')
+            else:
+                print('*******************************************')
+                print('1. Тип:', row['type'])
+                print('2. Формула вещества:', vv.upper())
+                print('3. Концентрация:', str(konc))
+                pH = pH_calc(row, konc)
+                print('4. pH:', str(round(pH, 4)))
+                print('5. Среда:', ("кислотная" if pH < 7 else ("щелочная" if pH > 7 else "нейтральная")))
+                print('6. Свойство:', row['strong'])
+                print('*******************************************')
+                print('')
+                break
