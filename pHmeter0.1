@@ -19,6 +19,25 @@ with open(conf_fn, 'rb') as fr: #Загрузка в буфер бинарног
                       'k_acid': float(e[4]), 'k_base': float(e[5]), 'k_gidr': float(e[6]),
                       'k_res1': float(e[7]), 'k_res2': float(e[8]), 'k_res3': float(e[9]),
                       'id_formula': int(e[10])}
+def pH_calc(row, konc):
+    if row['id_formula'] == 1:
+        pH = -math.log10(0.5 * (-row['k_acid'] + math.sqrt(row['k_acid']**2 + 4*row['k_acid']*konc)))
+    elif row['id_formula'] == 2:
+        pH = 14 + math.log10(0.5 * (-row['k_base'] + math.sqrt(row['k_base']**2 + 4*row['k_base']*konc)))
+    elif row['id_formula'] == 3:
+        pH = -math.log10(0.5 * (-konc - row['k_acid'] + math.sqrt(konc**2 + 6*konc*row['k_acid'] + row['k_acid']**2)))
+    elif row['id_formula'] == 4:
+        pH = -math.log10(konc)
+    elif row['id_formula'] == 5:
+        pH = 14 + math.log10(0.5 * (-row['k_gidr'] + math.sqrt(row['k_gidr']**2 + 4*row['k_gidr']*konc)))
+    elif row['id_formula'] == 6:
+        pH = -math.log10(0.5 * (-row['k_gidr'] + math.sqrt(row['k_gidr']**2 + 4*row['k_gidr']*konc)))
+    elif row['id_formula'] == 7:
+        pH = 14 + math.log10(konc)
+    else:
+        print('В файле указан неправильный индекс формулы pH для ', row['sub'])
+        pH = 0
+    return pH
 # Функция для вычисления pH на основе формулы и концентрации
 def pH_calc(row, konc):
     if row['id_formula'] == 1:
