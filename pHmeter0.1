@@ -2,3 +2,20 @@ import os, math, xlrd, sys
 SC_PATH=sys.path[0] #Забирает путь папки, из которой запущена программа. Для того, чтобы из нее прочитать Excel файл.
 
 list = {} #Заводим перемсенную типа "Словарь"
+
+#Загрузка данных из EXCEL
+conf_fn = os.path.join(SC_PATH, 'ph_list.xlsx') #Переменная с именем файла
+with open(conf_fn, 'rb') as fr: #Загрузка в буфер бинарного Excel-файла
+    data = fr.read()   #Чтение  данных из буфера
+    rb = xlrd.open_workbook(file_contents = data, encoding_override='cp1251') #Открыл рабочую книгу Excel
+    sheet = rb.sheet_by_index(0) #Из книги загрузил первый лист
+    vals2 = [sheet.row_values(rownum) for rownum in range(sheet.nrows)]
+    #vtypes = [sheet.row_types(rownum) for rownum in range(sheet.nrows)]
+    for e in vals2:
+        if e[1] == '' or e[1].strip() == 'sub':
+            continue
+        #print(e)
+        list[e[1].strip().upper()] = {'sub': e[1].strip().upper(), 'type': e[2], 'strong': e[3],
+                      'k_acid': float(e[4]), 'k_base': float(e[5]), 'k_gidr': float(e[6]),
+                      'k_res1': float(e[7]), 'k_res2': float(e[8]), 'k_res3': float(e[9]),
+                      'id_formula': int(e[10])}
